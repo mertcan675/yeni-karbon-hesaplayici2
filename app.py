@@ -1,4 +1,4 @@
-import streamlit as st # 'Import' değil 'import' olmalı
+import streamlit as st
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
@@ -7,6 +7,7 @@ import io
 
 # --- PDF RAPOR MOTORU ---
 def generate_pdf(firma_adi, elektrik, dogalgaz, motorin, toplam_co2, vergi):
+# Bu satırların hepsi içerde (tab veya 4 boşluk) olmalı
 buffer = io.BytesIO()
 c = canvas.Canvas(buffer, pagesize=letter)
 tarih = datetime.datetime.now().strftime("%d.%m.%Y")
@@ -18,7 +19,7 @@ c.setFont("Helvetica", 10)
 c.drawString(50, 735, f"Rapor No: {datetime.datetime.now().strftime('%Y%m%d')}-01 | Tarih: {tarih}")
 c.line(50, 725, 550, 725)
 
-# Firma Bilgisi (Türkçe karakter sorununu önlemek için encode/decode veya temizleme gerekebilir)
+# Firma Bilgisi
 c.setFont("Helvetica-Bold", 12)
 c.drawString(50, 700, f"Musteri: {firma_adi}")
 
@@ -30,7 +31,6 @@ c.drawString(350, 660, "Karbon Ayak Izi (kg CO2)")
 
 c.setFont("Helvetica", 10)
 y = 640
-# PDF içinde Türkçe karakter hatası almamak için etiketleri düzelttik
 items = [
 ("Elektrik", f"{elektrik:,} kWh", f"{elektrik * 0.45:,.2f}"),
 ("Dogalgaz", f"{dogalgaz:,} m3", f"{dogalgaz * 1.90:,.2f}"),
@@ -69,12 +69,9 @@ st.set_page_config(page_title="Karbon Analiz Paneli", page_icon="🌱")
 st.title("🌱 AB Karbon Vergisi (CBAM) Takip Sistemi")
 st.write("İhracatçı firmalar için hızlı uyum ve maliyet analiz paneli.")
 
-# Değişkeni başta tanımlayalım ki 'NameError' almayalım
-hesapla = False
-
 with st.sidebar:
 st.header("📊 Veri Girişi")
-firma = st.text_input("Firma Adı", "Ornek Sanayi A.S.")
+firma = st.text_input("Firma Adı", "Örnek Sanayi A.Ş.")
 el = st.number_input("Elektrik (kWh)", min_value=0, value=10000)
 dg = st.number_input("Doğalgaz (m3)", min_value=0, value=2000)
 mo = st.number_input("Motorin (Litre)", min_value=0, value=500)
